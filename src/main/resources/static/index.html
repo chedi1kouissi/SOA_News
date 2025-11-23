@@ -3,125 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOA News Aggregator</title>
+    <title>SOA News - Your Modern News Aggregator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
-            background-color: #f5f5f5;
         }
-        h1 {
-            color: #333;
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        header {
             text-align: center;
+            margin-bottom: 40px;
+            color: white;
         }
-        .controls {
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        /* Filter Panel Styles */
+        .filter-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Search Bar */
+        .search-container {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
         }
-        input, select, button {
-            padding: 10px;
+
+        .search-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 16px;
+            transition: all 0.3s;
         }
-        button {
-            background-color: #007bff;
-            color: white;
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .category-pill {
+            padding: 12px 24px;
             border: none;
+            border-radius: 25px;
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 500;
             cursor: pointer;
-            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 14px;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .category-pill:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
         }
+
+        .category-pill.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Country Selector */
+        .country-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .country-btn {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .country-btn:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .country-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        /* Action Buttons */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+        }
+
+        /* Results Info */
+        .results-info {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* News Grid */
         #newsContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
+
+        /* Article Card */
         .article {
             background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
         }
-        .article img {
+
+        .article:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .article-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+
+        .article-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-source {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .article h3 {
-            margin: 10px 0;
-            color: #333;
+            font-size: 1.25rem;
+            color: #1a202c;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            font-weight: 600;
         }
-        .article p {
-            color: #666;
-            line-height: 1.5;
+
+        .article-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            flex: 1;
         }
-        .article a {
-            color: #007bff;
-            text-decoration: none;
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
         }
-        .article .source {
-            color: #999;
+
+        .article-date {
+            color: #94a3b8;
             font-size: 14px;
-            margin-top: 10px;
+        }
+
+        .read-more {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap 0.3s;
+        }
+
+        .read-more:hover {
+            gap: 8px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .filter-panel {
+                padding: 20px;
+            }
+
+            #newsContainer {
+                grid-template-columns: 1fr;
+            }
+
+            .country-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>SOA News Aggregator</h1>
-    
-    <div class="controls">
-        <input type="text" id="searchInput" placeholder="Search news...">
-        <button onclick="searchNews()">Search</button>
-        
-        <select id="categorySelect" onchange="loadByCategory()">
-            <option value="">Select Category</option>
-            <option value="business">Business</option>
-            <option value="technology">Technology</option>
-            <option value="sports">Sports</option>
-            <option value="entertainment">Entertainment</option>
-            <option value="health">Health</option>
-            <option value="science">Science</option>
-        </select>
-        
-        <button onclick="loadTopHeadlines()">Top Headlines</button>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📰 SOA News</h1>
+            <p class="tagline">Your Modern News Aggregator - Stay Informed, Stay Ahead</p>
+        </header>
+
+        <!-- Filter Panel -->
+        <div class="filter-panel">
+            <!-- Search Section -->
+            <div class="filter-section">
+                <label class="filter-label">🔍 Search News</label>
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Search for topics, keywords, or events..."
+                        onkeypress="if(event.key === 'Enter') searchNews()">
+                    <button class="btn btn-primary" onclick="searchNews()">Search</button>
+                </div>
+            </div>
+
+            <!-- Categories Section -->
+            <div class="filter-section">
+                <label class="filter-label">📑 Categories</label>
+                <div class="category-pills">
+                    <button class="category-pill" onclick="loadByCategory('business')">💼 Business</button>
+                    <button class="category-pill" onclick="loadByCategory('technology')">💻 Technology</button>
+                    <button class="category-pill" onclick="loadByCategory('sports')">⚽ Sports</button>
+                    <button class="category-pill" onclick="loadByCategory('entertainment')">🎬 Entertainment</button>
+                    <button class="category-pill" onclick="loadByCategory('health')">🏥 Health</button>
+                    <button class="category-pill" onclick="loadByCategory('science')">🔬 Science</button>
+                    <button class="category-pill" onclick="loadByCategory('general')">📰 General</button>
+                </div>
+            </div>
+
+            <!-- Countries Section -->
+            <div class="filter-section">
+                <label class="filter-label">🌍 Select Country</label>
+                <div class="country-grid">
+                    <button class="country-btn active" onclick="loadByCountry('us')">🇺🇸 USA</button>
+                    <button class="country-btn" onclick="loadByCountry('gb')">🇬🇧 UK</button>
+                    <button class="country-btn" onclick="loadByCountry('fr')">🇫🇷 France</button>
+                    <button class="country-btn" onclick="loadByCountry('de')">🇩🇪 Germany</button>
+                    <button class="country-btn" onclick="loadByCountry('ca')">🇨🇦 Canada</button>
+                    <button class="country-btn" onclick="loadByCountry('au')">🇦🇺 Australia</button>
+                    <button class="country-btn" onclick="loadByCountry('in')">🇮🇳 India</button>
+                    <button class="country-btn" onclick="loadByCountry('jp')">🇯🇵 Japan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Info -->
+        <div class="results-info">
+            <div>
+                <span class="results-count" id="resultsCount">Loading news...</span>
+            </div>
+            <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+        </div>
+
+        <!-- News Container -->
+        <div id="newsContainer"></div>
     </div>
-    
-    <div id="newsContainer"></div>
 
     <script>
         const API_BASE = 'http://localhost:9094/api/news';
+        let currentFilter = { type: 'country', value: 'us' };
 
-        function loadTopHeadlines() {
-            fetch(`${API_BASE}/top-headlines?country=us`)
+        function setActiveButton(container, button) {
+            container.querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+        }
+
+        function updateResultsCount(count, filter) {
+            const resultsCount = document.getElementById('resultsCount');
+            resultsCount.textContent = `${count} articles found`;
+            if (filter) {
+                resultsCount.textContent += ` - ${filter}`;
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('resultsCount').innerHTML = 
+                '<span class="loading">⏳ Loading latest news...</span>';
+        }
+
+        function loadByCountry(country) {
+            showLoading();
+            currentFilter = { type: 'country', value: country };
+            
+            const button = event.target;
+            setActiveButton(button.parentElement, button);
+            
+            // Clear category selection
+            document.querySelectorAll('.category-pill').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            fetch(`${API_BASE}/top-headlines?country=${country}`)
                 .then(response => response.json())
-                .then(data => displayNews(data))
-                .catch(error => console.error('Error:', error));
+                .then(data => {
+                    displayNews(data);
+                    const countryName = button.textContent.trim();
+                    updateResultsCount(data.articles?.length || 0, `Top Headlines - ${countryName}`);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError();
+                });
         }
 
         function searchNews() {
-            const query = document.getElementById('searchInput').value;
-            if (!query) return;
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            showLoading();
+            currentFilter = { type: 'search', value: query };
+            
+            // Clear active states
+            document.querySelectorAll('.category-pill, .country-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
             
             fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`)
                 .then(response => response.json())
-                .then(data => displayNews(data))
-                .catch(error => console.error('Error:', error));
+                .then(data => {
+                    displayNews(data);
+                    updateResultsCount(data.articles?.length || 0, `Search: "${query}"`);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError();
+                });
         }
 
-        function loadByCategory() {
-            const category = document.getElementById('categorySelect').value;
-            if (!category) return;
+        function loadByCategory(category) {
+            showLoading();
+            currentFilter = { type: 'category', value: category };
+            
+            const button = event.target;
+            setActiveButton(button.parentElement, button);
+            
+            // Clear country selection except US
+            document.querySelectorAll('.country-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
             
             fetch(`${API_BASE}/category/${category}`)
                 .then(response => response.json())
-                .then(data => displayNews(data))
-                .catch(error => console.error('Error:', error));
+                .then(data => {
+                    displayNews(data);
+                    updateResultsCount(data.articles?.length || 0, `${category.charAt(0).toUpperCase() + category.slice(1)} News`);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError();
+                });
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            
+            // Reset to US top headlines
+            document.querySelectorAll('.category-pill').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.country-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelector('.country-btn').classList.add('active');
+            
+            loadByCountry('us');
         }
 
         function displayNews(data) {
@@ -129,28 +536,62 @@
             container.innerHTML = '';
             
             if (!data.articles || data.articles.length === 0) {
-                container.innerHTML = '<p>No articles found.</p>';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>No Articles Found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                    </div>
+                `;
                 return;
             }
             
             data.articles.forEach(article => {
+                if (!article.title) return;
+                
                 const articleDiv = document.createElement('div');
                 articleDiv.className = 'article';
                 
+                const publishDate = article.publishedAt ? 
+                    new Date(article.publishedAt).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    }) : 'Date unknown';
+                
                 articleDiv.innerHTML = `
-                    ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}">` : ''}
-                    <h3>${article.title}</h3>
-                    <p>${article.description || 'No description available.'}</p>
-                    <a href="${article.url}" target="_blank">Read more</a>
-                    <div class="source">Source: ${article.source.name} | ${new Date(article.publishedAt).toLocaleDateString()}</div>
+                    ${article.urlToImage ? 
+                        `<img src="${article.urlToImage}" alt="${article.title}" class="article-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect width=%27400%27 height=%27300%27 fill=%27%23667eea%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-size=%2724%27 fill=%27white%27%3ENo Image%3C/text%3E%3C/svg%3E'">` 
+                        : '<div class="article-image"></div>'}
+                    <div class="article-content">
+                        <span class="article-source">${article.source?.name || 'Unknown Source'}</span>
+                        <h3>${article.title}</h3>
+                        <p class="article-description">${article.description || 'No description available.'}</p>
+                        <div class="article-footer">
+                            <span class="article-date">📅 ${publishDate}</span>
+                            <a href="${article.url}" target="_blank" class="read-more">Read more →</a>
+                        </div>
+                    </div>
                 `;
                 
                 container.appendChild(articleDiv);
             });
         }
 
-        // Load top headlines on page load
-        window.onload = loadTopHeadlines;
+        function showError() {
+            const container = document.getElementById('newsContainer');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <h3>Oops! Something went wrong</h3>
+                    <p>Unable to load news. Please try again later.</p>
+                </div>
+            `;
+            document.getElementById('resultsCount').textContent = 'Error loading news';
+        }
+
+        // Load US top headlines on page load
+        window.onload = () => loadByCountry('us');
     </script>
 </body>
 </html>
