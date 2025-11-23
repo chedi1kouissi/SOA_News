@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOA News Aggregator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #newsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .article {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .article img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .article h3 {
+            margin: 10px 0;
+            color: #333;
+        }
+        .article p {
+            color: #666;
+            line-height: 1.5;
+        }
+        .article a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .article .source {
+            color: #999;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SOA News Aggregator</h1>
+    
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search news...">
+        <button onclick="searchNews()">Search</button>
+        
+        <select id="categorySelect" onchange="loadByCategory()">
+            <option value="">Select Category</option>
+            <option value="business">Business</option>
+            <option value="technology">Technology</option>
+            <option value="sports">Sports</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="health">Health</option>
+            <option value="science">Science</option>
+        </select>
+        
+        <button onclick="loadTopHeadlines()">Top Headlines</button>
+    </div>
+    
+    <div id="newsContainer"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:9094/api/news';
+
+        function loadTopHeadlines() {
+            fetch(`${API_BASE}/top-headlines?country=us`)
+                .then(response => response.json())
+                .then(data => displayNews(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function searchNews() {
+            const query = document.getElementById('searchInput').value;
+            if (!query) return;
+            
+            fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => displayNews(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function loadByCategory() {
+            const category = document.getElementById('categorySelect').value;
+            if (!category) return;
+            
+            fetch(`${API_BASE}/category/${category}`)
+                .then(response => response.json())
+                .then(data => displayNews(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayNews(data) {
+            const container = document.getElementById('newsContainer');
+            container.innerHTML = '';
+            
+            if (!data.articles || data.articles.length === 0) {
+                container.innerHTML = '<p>No articles found.</p>';
+                return;
+            }
+            
+            data.articles.forEach(article => {
+                const articleDiv = document.createElement('div');
+                articleDiv.className = 'article';
+                
+                articleDiv.innerHTML = `
+                    ${article.urlToImage ? `<img src="${article.urlToImage}" alt="${article.title}">` : ''}
+                    <h3>${article.title}</h3>
+                    <p>${article.description || 'No description available.'}</p>
+                    <a href="${article.url}" target="_blank">Read more</a>
+                    <div class="source">Source: ${article.source.name} | ${new Date(article.publishedAt).toLocaleDateString()}</div>
+                `;
+                
+                container.appendChild(articleDiv);
+            });
+        }
+
+        // Load top headlines on page load
+        window.onload = loadTopHeadlines;
+    </script>
+</body>
+</html>
