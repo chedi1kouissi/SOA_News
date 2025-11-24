@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOA News - Your Modern News Aggregator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>SOA News - Your Personalized News Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -27,13 +27,13 @@
         /* Header Styles */
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             color: white;
         }
 
         h1 {
             font-size: 3rem;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
@@ -44,12 +44,61 @@
             opacity: 0.95;
         }
 
-        /* Filter Panel Styles */
+        /* Auth Section */
+        .auth-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .auth-section.logged-out {
+            justify-content: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .user-details h3 {
+            margin: 0;
+            color: #1a202c;
+            font-size: 1.1rem;
+        }
+
+        .user-details p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Filter Panel */
         .filter-panel {
             background: white;
             border-radius: 20px;
             padding: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
 
@@ -62,13 +111,21 @@
         }
 
         .filter-label {
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.95rem;
             color: #667eea;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-description {
+            font-size: 0.85rem;
+            color: #64748b;
             margin-bottom: 12px;
-            display: block;
         }
 
         /* Search Bar */
@@ -105,10 +162,13 @@
             border-radius: 25px;
             background: #f7fafc;
             color: #4a5568;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .category-pill:hover {
@@ -122,30 +182,32 @@
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
-        /* Country Selector */
+        /* Country Grid */
         .country-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
         }
 
         .country-btn {
-            padding: 12px 16px;
+            padding: 14px 18px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             background: white;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: 500;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            font-size: 0.95rem;
         }
 
         .country-btn:hover {
             border-color: #667eea;
             background: #f7fafc;
+            transform: translateY(-2px);
         }
 
         .country-btn.active {
@@ -154,15 +216,18 @@
             color: white;
         }
 
-        /* Action Buttons */
+        /* Buttons */
         .btn {
-            padding: 14px 28px;
+            padding: 12px 24px;
             border: none;
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
@@ -179,41 +244,107 @@
         .btn-secondary {
             background: #f7fafc;
             color: #4a5568;
+            border: 2px solid #e2e8f0;
         }
 
         .btn-secondary:hover {
             background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            color: white;
         }
 
         /* Results Info */
-        .results-info {
+        .results-bar {
             background: white;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .results-count {
-            font-weight: 600;
+            font-weight: 700;
             color: #667eea;
             font-size: 1.1rem;
         }
 
-        .loading {
+        .active-filter {
+            background: #edf2f7;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        /* Personalized Section */
+        .personalized-container {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .section-header h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header p {
             color: #64748b;
-            font-style: italic;
+            font-size: 1rem;
+        }
+
+        .category-section {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .category-section h3 {
+            color: #1a202c;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         /* News Grid */
-        #newsContainer {
+        .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 25px;
-            margin-bottom: 40px;
         }
 
         /* Article Card */
@@ -225,6 +356,7 @@
             transition: all 0.3s;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .article:hover {
@@ -246,17 +378,32 @@
             flex-direction: column;
         }
 
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
         .article-source {
-            display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 6px 12px;
             border-radius: 6px;
             font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 12px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .save-indicator {
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .save-indicator:hover {
+            transform: scale(1.2);
         }
 
         .article h3 {
@@ -264,7 +411,7 @@
             color: #1a202c;
             margin-bottom: 12px;
             line-height: 1.4;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .article-description {
@@ -274,23 +421,30 @@
             flex: 1;
         }
 
+        .article-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
         .article-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 16px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 2px solid #e2e8f0;
         }
 
         .article-date {
             color: #94a3b8;
             font-size: 14px;
+            font-weight: 500;
         }
 
         .read-more {
             color: #667eea;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -304,24 +458,113 @@
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
             background: white;
             border-radius: 16px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         .empty-state-icon {
-            font-size: 4rem;
+            font-size: 5rem;
             margin-bottom: 20px;
         }
 
         .empty-state h3 {
             color: #1a202c;
+            font-size: 1.5rem;
             margin-bottom: 10px;
         }
 
         .empty-state p {
             color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 3px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 10px;
+            color: #667eea;
+            font-size: 1.8rem;
+        }
+
+        .modal-content p {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            flex: 1;
         }
 
         /* Responsive */
@@ -334,7 +577,7 @@
                 padding: 20px;
             }
 
-            #newsContainer {
+            .news-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -345,6 +588,11 @@
             .search-container {
                 flex-direction: column;
             }
+
+            .results-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -353,28 +601,44 @@
         <!-- Header -->
         <header>
             <h1>📰 SOA News</h1>
-            <p class="tagline">Your Modern News Aggregator - Stay Informed, Stay Ahead</p>
+            <p class="tagline">Your Personalized News Hub - Stay Informed, Stay Ahead</p>
         </header>
+
+        <!-- Auth Section -->
+        <div id="authSection" class="auth-section logged-out">
+            <div class="user-info" id="userInfo" style="display: none;">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-details">
+                    <h3 id="username"></h3>
+                    <p id="userStats"></p>
+                </div>
+            </div>
+            <div id="authButtons">
+                <button class="btn btn-primary" onclick="showLogin()">🔐 Login</button>
+                <button class="btn btn-secondary" onclick="showRegister()">✨ Register</button>
+            </div>
+            <button class="btn btn-danger" id="logoutBtn" style="display: none;" onclick="logout()">🚪 Logout</button>
+        </div>
 
         <!-- Filter Panel -->
         <div class="filter-panel">
-            <!-- Search Section -->
             <div class="filter-section">
-                <label class="filter-label">🔍 Search News</label>
+                <label class="filter-label">🔍 SEARCH NEWS</label>
+                <p class="filter-description">Search for specific topics, keywords, or events</p>
                 <div class="search-container">
                     <input 
                         type="text" 
                         id="searchInput" 
                         class="search-input" 
-                        placeholder="Search for topics, keywords, or events..."
+                        placeholder="Try 'artificial intelligence', 'climate change', 'sports'..."
                         onkeypress="if(event.key === 'Enter') searchNews()">
                     <button class="btn btn-primary" onclick="searchNews()">Search</button>
                 </div>
             </div>
 
-            <!-- Categories Section -->
             <div class="filter-section">
-                <label class="filter-label">📑 Categories</label>
+                <label class="filter-label">📑 BROWSE BY CATEGORY</label>
+                <p class="filter-description">Explore news by topic - your preferences are saved automatically</p>
                 <div class="category-pills">
                     <button class="category-pill" onclick="loadByCategory('business')">💼 Business</button>
                     <button class="category-pill" onclick="loadByCategory('technology')">💻 Technology</button>
@@ -386,9 +650,9 @@
                 </div>
             </div>
 
-            <!-- Countries Section -->
             <div class="filter-section">
-                <label class="filter-label">🌍 Select Country</label>
+                <label class="filter-label">🌍 SELECT COUNTRY</label>
+                <p class="filter-description">Get top headlines from your preferred region</p>
                 <div class="country-grid">
                     <button class="country-btn active" onclick="loadByCountry('us')">🇺🇸 USA</button>
                     <button class="country-btn" onclick="loadByCountry('gb')">🇬🇧 UK</button>
@@ -402,133 +666,309 @@
             </div>
         </div>
 
-        <!-- Results Info -->
-        <div class="results-info">
-            <div>
-                <span class="results-count" id="resultsCount">Loading news...</span>
+        <!-- Results Bar -->
+        <div class="results-bar">
+            <div class="results-info">
+                <span class="results-count" id="resultsCount"></span>
+                <span class="active-filter" id="activeFilter"></span>
             </div>
-            <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+            <button class="btn btn-secondary" onclick="clearFilters()">🔄 Clear Filters</button>
         </div>
 
-        <!-- News Container -->
-        <div id="newsContainer"></div>
+        <!-- Personalized Feed Section -->
+        <div id="personalizedFeed" class="personalized-container" style="display: none;">
+            <div class="section-header">
+                <h2>✨ Your Personalized Feed</h2>
+                <p>Based on your top 3 most saved categories</p>
+            </div>
+            <div id="personalizedSections"></div>
+        </div>
+
+        <!-- Main News Container -->
+        <div class="news-grid" id="newsContainer"></div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2 id="authTitle">Login</h2>
+            <p id="authSubtitle">Access your personalized news feed</p>
+            <input type="text" id="authUsername" placeholder="Username">
+            <input type="password" id="authPassword" placeholder="Password">
+            <div class="modal-actions">
+                <button class="btn btn-primary" style="width: 100%;" onclick="handleAuth()">Continue</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" style="width: 100%;" onclick="closeAuthModal()">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <script>
         const API_BASE = 'http://localhost:9094/api/news';
-        let currentFilter = { type: 'country', value: 'us' };
+        const USER_API = 'http://localhost:9094/api/users';
+        
+        let currentUserId = null;
+        let currentUsername = null;
+        let currentCategory = null;
+        let currentCountry = 'us';
+        let isLoginMode = true;
 
-        function setActiveButton(container, button) {
-            container.querySelectorAll('button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            button.classList.add('active');
+        // Auth Functions
+        function showLogin() {
+            isLoginMode = true;
+            document.getElementById('authTitle').textContent = 'Welcome Back!';
+            document.getElementById('authSubtitle').textContent = 'Access your personalized news feed';
+            document.getElementById('authModal').classList.add('active');
         }
 
-        function updateResultsCount(count, filter) {
-            const resultsCount = document.getElementById('resultsCount');
-            resultsCount.textContent = `${count} articles found`;
-            if (filter) {
-                resultsCount.textContent += ` - ${filter}`;
+        function showRegister() {
+            isLoginMode = false;
+            document.getElementById('authTitle').textContent = 'Join SOA News';
+            document.getElementById('authSubtitle').textContent = 'Create your account to save articles and personalize your feed';
+            document.getElementById('authModal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+        }
+
+        async function handleAuth() {
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+
+            if (!username || !password) {
+                alert('⚠️ Please fill in all fields');
+                return;
+            }
+
+            const endpoint = isLoginMode ? '/login' : '/register';
+            
+            try {
+                const response = await fetch(`${USER_API}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (isLoginMode) {
+                        currentUserId = data.userId;
+                        currentUsername = data.username;
+                        localStorage.setItem('userId', currentUserId);
+                        localStorage.setItem('username', currentUsername);
+                        await loadUserData();
+                        closeAuthModal();
+                    } else {
+                        alert('✅ Registration successful! Please login.');
+                        showLogin();
+                    }
+                } else {
+                    alert('❌ ' + (data.error || 'Authentication failed'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Network error. Please try again.');
             }
         }
 
-        function showLoading() {
-            document.getElementById('resultsCount').innerHTML = 
-                '<span class="loading">⏳ Loading latest news...</span>';
+        async function loadUserData() {
+            // Update UI
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('username').textContent = currentUsername;
+            document.getElementById('userAvatar').textContent = currentUsername.charAt(0).toUpperCase();
+
+            // Load preferences
+            try {
+                const response = await fetch(`${USER_API}/${currentUserId}/preferences`);
+                const prefs = await response.json();
+                
+                document.getElementById('userStats').textContent = 
+                    `${prefs.totalSavedArticles} saved articles`;
+
+                // Show personalized feed
+                if (prefs.top3Categories && prefs.top3Categories.length > 0) {
+                    showPersonalizedFeed(prefs.top3Categories);
+                }
+            } catch (error) {
+                console.error('Error loading preferences:', error);
+            }
         }
 
-        function loadByCountry(country) {
-            showLoading();
-            currentFilter = { type: 'country', value: country };
+        async function showPersonalizedFeed(top3Categories) {
+            const container = document.getElementById('personalizedSections');
+            const feedContainer = document.getElementById('personalizedFeed');
+            
+            feedContainer.style.display = 'block';
+            container.innerHTML = '';
+
+            for (const category of top3Categories) {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.innerHTML = `
+                    <h3>🔥 ${category.charAt(0).toUpperCase() + category.slice(1)} News</h3>
+                    <div class="news-grid" id="section-${category}"></div>
+                `;
+                container.appendChild(section);
+
+                await loadCategorySection(category);
+            }
+        }
+
+        async function loadCategorySection(category) {
+            try {
+                const response = await fetch(`${API_BASE}/category/${category}`);
+                const data = await response.json();
+                
+                const sectionContainer = document.getElementById(`section-${category}`);
+                if (!sectionContainer) return;
+                
+                sectionContainer.innerHTML = '';
+                
+                if (data.articles && data.articles.length > 0) {
+                    data.articles.slice(0, 6).forEach(article => {
+                        const articleDiv = createArticleCard(article, category, currentCountry);
+                        sectionContainer.appendChild(articleDiv);
+                    });
+                }
+            } catch (error) {
+                console.error(`Error loading ${category} section:`, error);
+            }
+        }
+
+        // News Loading Functions
+        async function loadByCountry(country) {
+            showLoading('Loading top headlines...');
+            currentCountry = country;
+            currentCategory = null;
             
             const button = event.target;
-            setActiveButton(button.parentElement, button);
+            setActiveButton('.country-btn', button);
+            clearActiveCategories();
             
-            // Clear category selection
-            document.querySelectorAll('.category-pill').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            fetch(`${API_BASE}/top-headlines?country=${country}`)
-                .then(response => response.json())
-                .then(data => {
-                    displayNews(data);
-                    const countryName = button.textContent.trim();
-                    updateResultsCount(data.articles?.length || 0, `Top Headlines - ${countryName}`);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showError();
-                });
+            try {
+                const response = await fetch(`${API_BASE}/top-headlines?country=${country}`);
+                const data = await response.json();
+                displayNews(data);
+                updateResultsBar(data.articles?.length || 0, `Top Headlines - ${button.textContent.trim()}`);
+            } catch (error) {
+                console.error('Error:', error);
+                showError();
+            }
         }
 
-        function searchNews() {
+        async function searchNews() {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) {
-                alert('Please enter a search term');
+                alert('⚠️ Please enter a search term');
                 return;
             }
             
-            showLoading();
-            currentFilter = { type: 'search', value: query };
+            showLoading('Searching...');
+            currentCategory = null;
+            clearActiveButtons();
             
-            // Clear active states
-            document.querySelectorAll('.category-pill, .country-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    displayNews(data);
-                    updateResultsCount(data.articles?.length || 0, `Search: "${query}"`);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showError();
-                });
+            try {
+                const response = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                displayNews(data);
+                updateResultsBar(data.articles?.length || 0, `Search: "${query}"`);
+            } catch (error) {
+                console.error('Error:', error);
+                showError();
+            }
         }
 
-        function loadByCategory(category) {
-            showLoading();
-            currentFilter = { type: 'category', value: category };
+        async function loadByCategory(category) {
+            showLoading('Loading news...');
+            currentCategory = category;
             
             const button = event.target;
-            setActiveButton(button.parentElement, button);
+            setActiveButton('.category-pill', button);
+            clearActiveCountries();
             
-            // Clear country selection except US
-            document.querySelectorAll('.country-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            fetch(`${API_BASE}/category/${category}`)
-                .then(response => response.json())
-                .then(data => {
-                    displayNews(data);
-                    updateResultsCount(data.articles?.length || 0, `${category.charAt(0).toUpperCase() + category.slice(1)} News`);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showError();
-                });
+            try {
+                const response = await fetch(`${API_BASE}/category/${category}`);
+                const data = await response.json();
+                displayNews(data);
+                updateResultsBar(data.articles?.length || 0, `${category.charAt(0).toUpperCase() + category.slice(1)} News`);
+            } catch (error) {
+                console.error('Error:', error);
+                showError();
+            }
         }
 
-        function clearFilters() {
-            document.getElementById('searchInput').value = '';
+        async function saveArticle(article, category, country) {
+            if (!currentUserId) {
+                alert('🔐 Please login to save articles');
+                showLogin();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${USER_API}/${currentUserId}/saved-articles`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        articleUrl: article.url,
+                        category: category,
+                        country: country
+                    })
+                });
+
+                if (response.ok) {
+                    alert('✅ Article saved! Your preferences have been updated.');
+                    await loadUserData();
+                } else {
+                    const error = await response.json();
+                    alert('❌ ' + (error.error || 'Failed to save article'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Network error. Please try again.');
+            }
+        }
+
+        function createArticleCard(article, category, country) {
+            const articleDiv = document.createElement('div');
+            articleDiv.className = 'article';
             
-            // Reset to US top headlines
-            document.querySelectorAll('.category-pill').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            const publishDate = article.publishedAt ? 
+                new Date(article.publishedAt).toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                }) : 'Date unknown';
             
-            document.querySelectorAll('.country-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            articleDiv.innerHTML = `
+                ${article.urlToImage ? 
+                    `<img src="${article.urlToImage}" alt="${article.title}" class="article-image" onerror="this.style.display='none'">` 
+                    : '<div class="article-image"></div>'}
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span class="article-source">${article.source?.name || 'Unknown'}</span>
+                        ${currentUserId ? `<span class="save-indicator" onclick='saveArticleFromCard(${JSON.stringify(article).replace(/'/g, "\\'")} , "${category}", "${country}")' title="Save article">💾</span>` : ''}
+                    </div>
+                    <h3>${article.title}</h3>
+                    <p class="article-description">${article.description || 'No description available.'}</p>
+                    <div class="article-footer">
+                        <span class="article-date">📅 ${publishDate}</span>
+                        <a href="${article.url}" target="_blank" class="read-more">Read more →</a>
+                    </div>
+                </div>
+            `;
             
-            document.querySelector('.country-btn').classList.add('active');
-            
-            loadByCountry('us');
+            return articleDiv;
+        }
+
+        function saveArticleFromCard(article, category, country) {
+            saveArticle(article, category, country);
         }
 
         function displayNews(data) {
@@ -548,34 +988,60 @@
             
             data.articles.forEach(article => {
                 if (!article.title) return;
-                
-                const articleDiv = document.createElement('div');
-                articleDiv.className = 'article';
-                
-                const publishDate = article.publishedAt ? 
-                    new Date(article.publishedAt).toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                    }) : 'Date unknown';
-                
-                articleDiv.innerHTML = `
-                    ${article.urlToImage ? 
-                        `<img src="${article.urlToImage}" alt="${article.title}" class="article-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect width=%27400%27 height=%27300%27 fill=%27%23667eea%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-size=%2724%27 fill=%27white%27%3ENo Image%3C/text%3E%3C/svg%3E'">` 
-                        : '<div class="article-image"></div>'}
-                    <div class="article-content">
-                        <span class="article-source">${article.source?.name || 'Unknown Source'}</span>
-                        <h3>${article.title}</h3>
-                        <p class="article-description">${article.description || 'No description available.'}</p>
-                        <div class="article-footer">
-                            <span class="article-date">📅 ${publishDate}</span>
-                            <a href="${article.url}" target="_blank" class="read-more">Read more →</a>
-                        </div>
-                    </div>
-                `;
-                
+                const articleDiv = createArticleCard(article, currentCategory || 'general', currentCountry);
                 container.appendChild(articleDiv);
             });
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            clearActiveButtons();
+            document.querySelector('.country-btn').classList.add('active');
+            loadByCountry('us');
+        }
+
+        function logout() {
+            currentUserId = null;
+            currentUsername = null;
+            localStorage.removeItem('userId');
+            localStorage.removeItem('username');
+            
+            document.getElementById('authButtons').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('personalizedFeed').style.display = 'none';
+            
+            clearFilters();
+        }
+
+        // Helper Functions
+        function setActiveButton(selector, button) {
+            document.querySelectorAll(selector).forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        function clearActiveButtons() {
+            document.querySelectorAll('.category-pill, .country-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+
+        function clearActiveCategories() {
+            document.querySelectorAll('.category-pill').forEach(btn => btn.classList.remove('active'));
+        }
+
+        function clearActiveCountries() {
+            document.querySelectorAll('.country-btn').forEach(btn => btn.classList.remove('active'));
+        }
+
+        function showLoading(message) {
+            document.getElementById('resultsCount').innerHTML = `<span class="loading">${message}</span>`;
+            document.getElementById('activeFilter').textContent = '';
+        }
+
+        function updateResultsBar(count, filter) {
+            document.getElementById('resultsCount').textContent = `${count} articles found`;
+            document.getElementById('activeFilter').textContent = filter;
         }
 
         function showError() {
@@ -588,10 +1054,22 @@
                 </div>
             `;
             document.getElementById('resultsCount').textContent = 'Error loading news';
+            document.getElementById('activeFilter').textContent = '';
         }
 
-        // Load US top headlines on page load
-        window.onload = () => loadByCountry('us');
+        // Initialize
+        window.onload = () => {
+            const savedUserId = localStorage.getItem('userId');
+            const savedUsername = localStorage.getItem('username');
+            
+            if (savedUserId && savedUsername) {
+                currentUserId = savedUserId;
+                currentUsername = savedUsername;
+                loadUserData();
+            }
+            
+            loadByCountry('us');
+        };
     </script>
 </body>
 </html>
