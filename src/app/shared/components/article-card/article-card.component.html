@@ -1,0 +1,21 @@
+<div class="article-card">
+    <div class="article-image"
+        [style.backgroundImage]="'url(' + (article.urlToImage || 'assets/placeholder.jpg') + ')'"></div>
+    <div class="article-content">
+        <div class="article-meta">
+            <span class="source-badge">{{ article.source?.name || 'Unknown' }}</span>
+            <button *ngIf="showSaveButton" class="save-btn" [class.saved]="isSaved"
+                (click)="isSaved ? onUnsave() : onSave()" [title]="isSaved ? 'Remove from saved' : 'Save article'">
+                <i class="bi" [class.bi-bookmark-fill]="isSaved" [class.bi-bookmark]="!isSaved"></i>
+            </button>
+        </div>
+
+        <h3>{{ article.title }}</h3>
+        <p class="description">{{ article.description }}</p>
+
+        <div class="article-footer">
+            <span class="date">{{ article.publishedAt | date:'mediumDate' }}</span>
+            <a [href]="article.url" target="_blank" class="read-more">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Join SOA News</h2>
+        <p class="subtitle">Create your account to save articles</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" formControlName="username" placeholder="Choose a username">
+                <div class="error-msg"
+                    *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid">
+                    Username is required
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" formControlName="password" placeholder="Choose a password">
+                <div class="error-msg"
+                    *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+                    Password must be at least 4 characters
+                </div>
+            </div>
+
+            <div class="error-alert" *ngIf="error">
+                {{ error }}
+            </div>
+
+            <button type="submit" class="btn-primary" [disabled]="registerForm.invalid || isLoading">
+                {{ isLoading ? 'Creating Account...' : 'Register' }}
+            </button>
+
+            <p class="auth-footer">
+                Already have an account? <a routerLink="/login">Login here</a>
+            </p>
+        </form>
+    </div>
+</div>

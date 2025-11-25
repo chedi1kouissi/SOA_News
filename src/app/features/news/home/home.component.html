@@ -1,0 +1,44 @@
+<div class="home-container">
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Discover the World's Headlines</h1>
+        <div class="search-bar">
+            <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+                placeholder="Search for topics, locations & sources">
+            <button (click)="onSearch()">Search</button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-container">
+        <div class="categories">
+            <button *ngFor="let cat of categories" [class.active]="currentCategory === cat"
+                (click)="loadByCategory(cat)">
+                {{ cat | titlecase }}
+            </button>
+        </div>
+
+        <div class="countries">
+            <select [ngModel]="currentCountry" (ngModelChange)="onCountryChange($event)">
+                <option *ngFor="let c of countries" [value]="c.code">{{ c.name }}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-area">
+        <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+        <div class="news-grid" *ngIf="!loading">
+            <app-article-card *ngFor="let article of articles" [article]="article" [isSaved]="isArticleSaved(article)"
+                (save)="onSaveArticle($event)" (unsave)="onUnsaveArticle($event)">
+            </app-article-card>
+        </div>
+
+        <div class="empty-state" *ngIf="!loading && articles.length === 0">
+            <i class="bi bi-newspaper"></i>
+            <h3>No articles found</h3>
+            <p>Try adjusting your filters</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="saved-container">
+    <div class="header">
+        <h2>Saved Articles</h2>
+        <p>{{ articles.length }} articles saved</p>
+    </div>
+
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+    <div class="news-grid" *ngIf="!loading">
+        <app-article-card *ngFor="let article of articles" [article]="article" [isSaved]="true"
+            (unsave)="onUnsaveArticle($event)">
+        </app-article-card>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && articles.length === 0">
+        <i class="bi bi-bookmark"></i>
+        <h3>No saved articles</h3>
+        <p>Save articles you want to read later</p>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="search-container">
+    <div class="header">
+        <h2>Search Results for "{{ query }}"</h2>
+        <p>{{ articles.length }} articles found</p>
+    </div>
+
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+    <div class="news-grid" *ngIf="!loading">
+        <app-article-card *ngFor="let article of articles" [article]="article" [isSaved]="isArticleSaved(article)"
+            (save)="onSaveArticle($event)" (unsave)="onUnsaveArticle($event)">
+        </app-article-card>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && articles.length === 0">
+        <h3>No results found</h3>
+        <p>Try searching for something else</p>
+    </div>
+</div>
