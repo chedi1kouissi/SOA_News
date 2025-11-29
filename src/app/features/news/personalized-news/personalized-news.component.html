@@ -1,0 +1,20 @@
+<div class="personalized-container">
+    <div class="header">
+        <h2>For You</h2>
+        <p>News curated based on your reading history</p>
+    </div>
+
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+    <div class="news-grid" *ngIf="!loading">
+        <app-article-card *ngFor="let article of articles" [article]="article" [isSaved]="isArticleSaved(article)"
+            (save)="onSaveArticle($event)" (unsave)="onUnsaveArticle($event)">
+        </app-article-card>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && articles.length === 0">
+        <i class="bi bi-stars"></i>
+        <h3>No personalized news yet</h3>
+        <p>Save some articles to get recommendations!</p>
+    </div>
+</div>

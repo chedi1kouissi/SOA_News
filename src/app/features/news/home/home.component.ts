@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit {
             return;
         }
         this.userService.saveArticle(this.currentUser.id, {
-            articleUrl: article.url,
+            article: article,
             category: this.currentCategory,
             country: this.currentCountry
         }).subscribe(() => {

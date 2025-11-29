@@ -8,6 +8,7 @@
             <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
 
             <ng-container *ngIf="currentUser$ | async as user; else guestLinks">
+                <a routerLink="/for-you" routerLinkActive="active">For You</a>
                 <a routerLink="/saved" routerLinkActive="active">Saved Articles</a>
                 <div class="user-menu">
                     <span class="username">{{ user.username }}</span>
