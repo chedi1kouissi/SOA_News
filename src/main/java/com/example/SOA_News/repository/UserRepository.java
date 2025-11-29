@@ -11,35 +11,35 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+
     /**
      * Find user by username
      */
     Optional<User> findByUsername(String username);
-    
+
     /**
      * Check if username already exists
      */
     boolean existsByUsername(String username);
-    
+
     /**
      * Find users by preferred country
      */
     List<User> findByPreferredCountry(String country);
-    
+
     /**
      * Find users who have a specific category in their preferences
      * This queries the @ElementCollection
      */
     @Query("SELECT u FROM User u JOIN u.preferredCategories c WHERE c = :category")
     List<User> findByPreferredCategory(@Param("category") String category);
-    
+
     /**
      * Find users who have saved a specific article URL
      */
-    @Query("SELECT u FROM User u JOIN u.savedArticleUrls a WHERE a LIKE CONCAT(:articleUrl, '%')")
+    @Query("SELECT u FROM User u JOIN u.savedArticles a WHERE a.url = :articleUrl")
     List<User> findBySavedArticleUrl(@Param("articleUrl") String articleUrl);
-    
+
     /**
      * Count users by preferred country
      */

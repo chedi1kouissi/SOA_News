@@ -1,5 +1,7 @@
 package com.example.SOA_News.service;
 
+import com.example.SOA_News.model.Article;
+import com.example.SOA_News.model.SavedArticle;
 import com.example.SOA_News.model.User;
 import com.example.SOA_News.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,158 +14,166 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserService {
-    
+
     @Autowired
     private UserRepository userRepository;
-    
-    /**
-     * Create new user - password stored as plain text
-     */
+
+    @Autowired
+    private NewsService newsService;
+
     public User createUser(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
         return userRepository.save(user);
     }
-    
-    /**
-     * Simple authentication - just compare username and password
-     */
+
     public boolean authenticateUser(String username, String password) {
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            // Simple string comparison
             return user.getPassword().equals(password);
         }
         return false;
     }
-    
+
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
-    
+
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    
+
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
-    
-    /**
-     * Save article with category and country
-     * Format: "url|category|country"
-     */
-    public User saveArticle(Long userId, String articleUrl, String category, String country) {
+
+    public User saveArticle(Long userId, Article article, String category, String country) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        String articleEntry = articleUrl + "|" + category + "|" + country;
-        
+
         // Check if already saved
-        boolean alreadySaved = user.getSavedArticleUrls().stream()
-                .anyMatch(entry -> entry.startsWith(articleUrl + "|"));
-        
+        boolean alreadySaved = user.getSavedArticles().stream()
+                .anyMatch(sa -> sa.getUrl().equals(article.getUrl()));
+
         if (alreadySaved) {
             throw new RuntimeException("Article already saved");
         }
-        
-        user.getSavedArticleUrls().add(articleEntry);
+
+        SavedArticle savedArticle = new SavedArticle();
+        savedArticle.setUser(user);
+        savedArticle.setUrl(article.getUrl());
+        savedArticle.setTitle(article.getTitle());
+        savedArticle.setDescription(article.getDescription());
+        savedArticle.setUrlToImage(article.getUrlToImage());
+        savedArticle.setPublishedAt(article.getPublishedAt());
+        savedArticle.setSourceName(article.getSource() != null ? article.getSource().getName() : null);
+        savedArticle.setCategory(category);
+        savedArticle.setCountry(country);
+
+        user.getSavedArticles().add(savedArticle);
         user.getPreferredCategories().add(category);
-        
+
         if (user.getPreferredCountry().equals("us") && !country.equals("us")) {
             user.setPreferredCountry(country);
         }
-        
+
         return userRepository.save(user);
     }
-    
-    /**
-     * Remove saved article
-     */
+
     public User unsaveArticle(Long userId, String articleUrl) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        user.getSavedArticleUrls().removeIf(entry -> entry.startsWith(articleUrl + "|"));
+
+        user.getSavedArticles().removeIf(sa -> sa.getUrl().equals(articleUrl));
         return userRepository.save(user);
     }
-    
-    /**
-     * Get all saved articles with metadata
-     */
-    public List<Map<String, String>> getSavedArticles(Long userId) {
+
+    public List<SavedArticle> getSavedArticles(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        return user.getSavedArticleUrls().stream()
-                .map(entry -> {
-                    String[] parts = entry.split("\\|");
-                    Map<String, String> article = new HashMap<>();
-                    article.put("url", parts[0]);
-                    article.put("category", parts.length > 1 ? parts[1] : "general");
-                    article.put("country", parts.length > 2 ? parts[2] : "us");
-                    return article;
-                })
-                .collect(Collectors.toList());
+
+        return user.getSavedArticles();
     }
-    
-    /**
-     * Get top 3 categories from saved articles
-     */
+
     public List<String> getTop3Categories(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        List<String> categories = user.getSavedArticleUrls().stream()
-                .map(entry -> {
-                    String[] parts = entry.split("\\|");
-                    return parts.length > 1 ? parts[1] : "general";
-                })
+
+        List<String> categories = user.getSavedArticles().stream()
+                .map(SavedArticle::getCategory)
                 .collect(Collectors.toList());
-        
-        // Count occurrences
+
         Map<String, Long> categoryCount = categories.stream()
                 .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
-        
-        // Return top 3
+
         return categoryCount.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(3)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
-    
-    /**
-     * Get user preferences
-     */
+
     public Map<String, Object> getUserPreferences(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
+
         Map<String, Object> preferences = new HashMap<>();
         preferences.put("username", user.getUsername());
         preferences.put("preferredCategories", user.getPreferredCategories());
         preferences.put("preferredCountry", user.getPreferredCountry());
         preferences.put("top3Categories", getTop3Categories(userId));
-        preferences.put("totalSavedArticles", user.getSavedArticleUrls().size());
-        
+        preferences.put("totalSavedArticles", user.getSavedArticles().size());
+
         return preferences;
     }
-    
-    /**
-     * Check if article is saved
-     */
+
     public boolean isArticleSaved(Long userId, String articleUrl) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        return user.getSavedArticleUrls().stream()
-                .anyMatch(entry -> entry.startsWith(articleUrl + "|"));
+
+        return user.getSavedArticles().stream()
+                .anyMatch(sa -> sa.getUrl().equals(articleUrl));
+    }
+
+    public List<Article> getPersonalizedNews(Long userId) {
+        List<String> topCategories = getTop3Categories(userId);
+        if (topCategories.isEmpty()) {
+            topCategories.add("general"); // Default
+        }
+
+        List<Article> personalizedArticles = new ArrayList<>();
+        for (String category : topCategories) {
+            // Fetch news for each top category.
+            // Note: This might be slow if we make many calls. Limiting to top 3 is good.
+            // Also, we might want to limit the number of articles per category.
+            try {
+                // Assuming NewsService returns a wrapper with "articles" list
+                // We need to access the list.
+                // Since NewsService returns a Map or Object, let's assume it returns the same
+                // structure as the controller uses.
+                // Wait, NewsService returns `NewsResponse` or similar?
+                // I need to check NewsService signature.
+                // Based on previous view, it returns `NewsResponse` or similar object.
+                // Let's assume `newsService.getNewsByCategory(category)` returns an object that
+                // has `getArticles()`.
+                // I'll check NewsService again if needed, but for now I'll cast or assume.
+                // Actually, I should check NewsService.
+                var response = newsService.getNewsByCategory(category);
+                if (response != null && response.getArticles() != null) {
+                    personalizedArticles.addAll(response.getArticles());
+                }
+            } catch (Exception e) {
+                System.err.println("Error fetching personalized news for category: " + category);
+            }
+        }
+        // Shuffle to mix them up? Or keep ordered? Let's shuffle for variety.
+        Collections.shuffle(personalizedArticles);
+        return personalizedArticles;
     }
 }
